@@ -84,7 +84,7 @@ pointer-events:none;overflow:hidden;z-index:999;
 }
 .petal{
 position:absolute;top:-50px;width:20px;height:20px;
-background-image:url('https://i.imgur.com/7Qp9Z6p.png');
+background-image:url('https://png.pngtree.com/png-clipart/20210311/original/pngtree-pink-petal-falling-png-image_5982233.png');
 background-size:cover;
 animation:fall linear infinite;
 }
@@ -225,18 +225,47 @@ autoScroll();
 }
 
 /* SCROLL AUTO */
-function autoScroll(){
-let sections=document.querySelectorAll('.section');
-let i=0;
-function next(){
-if(i<sections.length){
-sections[i].scrollIntoView({behavior:"smooth"});
-i++;
-setTimeout(next,3500);
-}}
-setTimeout(next,2000);
+<script>
+function smoothScrollTo(targetY, duration = 2000){
+  const startY = window.scrollY;
+  const diff = targetY - startY;
+  let start;
+
+  function step(timestamp){
+    if(!start) start = timestamp;
+    const time = timestamp - start;
+    const percent = Math.min(time / duration, 1);
+
+    const ease = percent < 0.5
+      ? 2 * percent * percent
+      : 1 - Math.pow(-2 * percent + 2, 2) / 2;
+
+    window.scrollTo(0, startY + diff * ease);
+
+    if(time < duration){
+      requestAnimationFrame(step);
+    }
+  }
+
+  requestAnimationFrame(step);
 }
 
+function autoScroll(){
+  const sections = document.querySelectorAll('.section');
+  let i = 0;
+
+  function next(){
+    if(i < sections.length){
+      const y = sections[i].offsetTop - 50;
+      smoothScrollTo(y, 2000);
+      i++;
+      setTimeout(next, 4000);
+    }
+  }
+
+  setTimeout(next, 2000);
+}
+</script>
 /* MUSIC */
 function toggleMusic(){
 music.paused?music.play():music.pause();
